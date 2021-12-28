@@ -1,38 +1,72 @@
-.App {
-  text-align: center;
+.address {
+  /* Turn it into occupying whole line */
+  display: block;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.stop-button {
+  display: block;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.goal-words,
+.result-words {
+  /* Make its children into same line */
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
+  margin-bottom: 4px;
+}
+
+.result-words {
+  display: flex;
+}
+
+.goal,
+.result {
+  border-radius: 15px;
+  overflow: hidden;
+  font-size: 16px;
+  margin-bottom: 16px;
+}
+
+.goal-title,
+.result-title {
   color: white;
+  background-color: #808080;
+  text-align: center;
+  padding: 12px;
 }
 
-.App-link {
-  color: #61dafb;
+.warning {
+  font-size: 14px;
+  color: #d0b6b0;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.goal-space,
+.result-space {
+  padding: 10px;
+}
+
+.result-number {
+  color: #489550;
+}
+
+.route-button {
+  background-color: #4caf50; /* Green */
+  border-radius: 15px;
+  color: black;
+  padding: 15px 32px;
+  text-align: center;
+  display: inline-block;
+  font-size: 16px;
+}
+
+.stop-button {
+  padding: 12px 8px;
+
+  /* Three good stuff */
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.stop-button svg {
+  margin-right: 4px;
 }
