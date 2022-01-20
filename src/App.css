@@ -70,3 +70,8 @@
 .stop-button svg {
   margin-right: 4px;
 }
+
+.App {
+  display: flex;
+  justify-content: space-around;
+}
