@@ -103,7 +103,8 @@ function App() {
             leftIcon={<MdAddCircleOutline />}
             colorScheme="teal"
             variant="solid"
-            margin={"20px"}
+            marginTop={"10px"}
+            marginBottom={"15px"}
             onClick={handleClick}
           >
             Add stops
@@ -116,7 +117,7 @@ function App() {
             </div>
             <div className="goal-space">
               <div className="goal-words">
-                <div className="goal-time">Enter your time weight(0-1):</div>
+                <div className="goal-time">Enter your time weight(0-1) :</div>
                 {/* <input className="input-number input-time " type="text" > */}
                 <NumberInput
                   maxW={32}
@@ -124,6 +125,7 @@ function App() {
                   defaultValue={0.0}
                   min={0.0}
                   max={1}
+                  marginLeft={"10px"}
                 >
                   <NumberInputField />
                   <NumberInputStepper>
@@ -133,7 +135,7 @@ function App() {
                 </NumberInput>
               </div>
               <div className="goal-words">
-                <div className="goal-cost">Enter your cost weight(0-1):</div>
+                <div className="goal-cost">Enter your cost weight(0-1) :</div>
                 {/* <input className="input-number input-weight" type="text" /> */}
                 <NumberInput
                   maxW={32}
@@ -141,6 +143,7 @@ function App() {
                   defaultValue={0.0}
                   min={0.0}
                   max={1}
+                  marginLeft={"10px"}
                 >
                   <NumberInputField />
                   <NumberInputStepper>
@@ -187,7 +190,7 @@ function App() {
           </div>
           <div className="route">
             <button className="route-button">
-              <Button colorScheme="teal" size="md">
+              <Button colorScheme="teal" size="lg">
                 View Route Directions
               </Button>
             </button>

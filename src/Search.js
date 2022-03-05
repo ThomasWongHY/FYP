@@ -48,6 +48,7 @@ const Search = ({ stops, setStops, index }) => {
         <AutoCompleteInput
           variant="filled"
           placeholder="Enter any address"
+          marginBottom={"10px"}
           onChange={(e) => {
             setValue(e.target.value);
           }}

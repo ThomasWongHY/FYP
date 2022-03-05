@@ -11,7 +11,8 @@
 .result-words {
   /* Make its children into same line */
   display: flex;
-  margin-bottom: 4px;
+  margin-bottom: 10px;
+  font-size: 20px;
 }
 
 .result-words {
@@ -36,8 +37,9 @@
 }
 
 .warning {
-  font-size: 16px;
+  font-size: 18px;
   color: black;
+  margin-top: 10px;
 }
 
 .goal-space,
