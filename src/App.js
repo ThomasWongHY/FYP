@@ -45,6 +45,7 @@ import {
 } from "@choc-ui/chakra-autocomplete";
 import { useCallbackRef } from "use-callback-ref";
 import Search from "./Search";
+import Axios from "axios";
 
 const libraries = ["places"];
 const mapContainerStyle = {
@@ -70,60 +71,23 @@ function App() {
   const onMapLoad = React.useCallback((map) => {
     mapRef.current = map;
   }, []);
-
-  const getBtn = document.getElementById("get-btn");
-  const postBtn = document.getElementById("post-btn");
-
-  const sendHttpRequest = (method, url, data) => {
-    const promise = new Promise((resolve, reject) => {
-      const xhr = new XMLHttpRequest();
-      xhr.open(method, url);
-
-      xhr.responseType = "json";
-
-      if (data) {
-        xhr.setRequestHeader("Content-Type", "application/json");
-      }
-
-      xhr.onload = () => {
-        if (xhr.status >= 400) {
-          reject(xhr.response);
-        } else {
-          resolve(xhr.response);
-        }
-      };
-
-      xhr.onerror = () => {
-        reject("Something went wrong!");
-      };
-
-      xhr.send(JSON.stringify(data));
-    });
-    return promise;
-  };
-
-  const getData = () => {
-    sendHttpRequest("GET", "http://127.0.0.1:5000/").then((responseData) => {
-      console.log(responseData);
-    });
-  };
-
-  const sendData = () => {
-    sendHttpRequest("POST", "http://127.0.0.1:5000/", {
-      wcost: "0.5",
-      pt: "shatin,lokfu",
-      cost: "2000",
+  const [algoresult, setalgoresult] = useState("");
+  const [algoresultcar, setalgoresultcar] = useState("");
+  const getResult = () => {
+    Axios.post("http://localhost:5000/", {
+      pt: ["lokfu", "shatin"],
+      wcost: 0.5,
+      cost: 2000,
     })
-      .then((responseData) => {
-        console.log(responseData);
+      .then((response) => {
+        console.log(response);
+        setalgoresult(response.data.time);
+        setalgoresultcar(response.data.vehicle);
       })
-      .catch((err) => {
-        console.log(err);
+      .catch((error) => {
+        console.log(error);
       });
   };
-
-  getBtn.addEventListener("click", getData);
-  postBtn.addEventListener("click", sendData);
 
   const [markers, setMarkers] = React.useState([]);
 
@@ -153,19 +117,18 @@ function App() {
               setStops={setStops}
             />
           ))}
-
-          <Button
-            leftIcon={<MdAddCircleOutline />}
-            colorScheme="teal"
-            variant="solid"
-            marginTop={"10px"}
-            marginBottom={"15px"}
-            onClick={handleClick}
-          >
-            Add stops
-          </Button>
-          <button id="get-btn">Get Data</button>
-          <button id="post-btn">post Data</button>
+          <div className="twobutton">
+            <Button
+              leftIcon={<MdAddCircleOutline />}
+              colorScheme="teal"
+              variant="solid"
+              marginTop={"10px"}
+              marginBottom={"15px"}
+              onClick={handleClick}
+            >
+              Add stops
+            </Button>
+          </div>
           <div className="goal">
             <div className="goal-title">
               <Box bg="grey" w="100%" p={0.2} color="white">
@@ -228,7 +191,7 @@ function App() {
               <div className="result-words">
                 <div className="result-time">Estimated Time:</div>
                 <div className="result-number">
-                  <Container maxW="container.md">30 mins</Container>
+                  <Container maxW="container.md">{algoresult} mins</Container>
                 </div>
               </div>
               <div className="result-words">
@@ -240,12 +203,22 @@ function App() {
               <div className="result-words">
                 <div className="result-vehicle">Required Vehicles:</div>
                 <div className="result-number">
-                  <Container maxW="container.md">2</Container>
+                  <Container maxW="container.md">{algoresultcar}</Container>
                 </div>
               </div>
             </div>
           </div>
           <div className="route">
+            <div className="algo-result-button">
+              <Button
+                colorScheme="blue"
+                size="sm"
+                id="get-btn"
+                onClick={getResult}
+              >
+                Get Data
+              </Button>
+            </div>
             <button className="route-button">
               <Button colorScheme="teal" size="lg">
                 View Route Directions
