@@ -8,7 +8,9 @@
 }
 
 .goal-words,
-.result-words {
+.result-words,
+.result-vehicle-price,
+.result-vehicle-cap {
   /* Make its children into same line */
   display: flex;
   margin-bottom: 10px;
@@ -96,4 +98,9 @@
 
 .result {
   margin-bottom: -3px;
+  margin-top: 15px;
+}
+
+.confirmbtn {
+  margin-bottom: 20px;
 }

@@ -1,5 +1,13 @@
 import "./App.css";
-import { FaGoogle, FaPlusCircle, FaExclamationCircle } from "react-icons/fa";
+import {
+  FaGoogle,
+  FaPlusCircle,
+  FaExclamationCircle,
+  FaQuestionCircle,
+  FaDirections,
+  Facheck,
+  FaCheck,
+} from "react-icons/fa";
 import {
   GoogleMap,
   useLoadScript,
@@ -34,6 +42,17 @@ import {
   AlertTitle,
   AlertDescription,
   Container,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  useDisclosure,
+  Stack,
+  HStack,
+  VStack,
 } from "@chakra-ui/react";
 import { MdAddCircleOutline } from "react-icons/md";
 import React, { useState, useRef, useEffect, useCallback } from "react";
@@ -50,7 +69,7 @@ import Axios from "axios";
 const libraries = ["places"];
 const mapContainerStyle = {
   width: "76vw",
-  height: "100vh",
+  height: "110vh",
 };
 const center = {
   lat: 22.3476629743,
@@ -66,6 +85,7 @@ function App() {
     googleMapsApiKey: process.env.REACT_APP_API_KEY,
     libraries,
   });
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   const mapRef = React.useRef();
   const onMapLoad = React.useCallback((map) => {
@@ -73,16 +93,22 @@ function App() {
   }, []);
   const [algoresult, setalgoresult] = useState("");
   const [algoresultcar, setalgoresultcar] = useState("");
+  const [weight, setWeight] = useState("");
+  const [cweight, setCweight] = useState("");
+  const [ccar, setCcar] = useState("");
+
   const getResult = () => {
-    Axios.post("http://localhost:5000/", {
-      pt: ["lokfu", "shatin"],
-      wcost: 0.5,
-      cost: 2000,
+    Axios.post("/", {
+      pt: stops,
+      wcost: parseFloat(weight),
+      cost: Number(ccar),
     })
       .then((response) => {
-        console.log(response);
+        console.log(response.data);
+
         setalgoresult(response.data.time);
         setalgoresultcar(response.data.vehicle);
+        // setalgoresultcarcost(response.data.cost);
       })
       .catch((error) => {
         console.log(error);
@@ -95,8 +121,6 @@ function App() {
 
   if (loadError) return "Error";
   if (!isLoaded) return "Loading";
-
-  // const [office, setOffice] = useState<LatLngLiteral>();
 
   function handleClick() {
     setStops([...stops, null]);
@@ -117,7 +141,8 @@ function App() {
               setStops={setStops}
             />
           ))}
-          <div className="twobutton">
+
+          <HStack spacing={200}>
             <Button
               leftIcon={<MdAddCircleOutline />}
               colorScheme="teal"
@@ -128,7 +153,37 @@ function App() {
             >
               Add stops
             </Button>
-          </div>
+
+            <div classname="helpbtn">
+              <Button
+                leftIcon={<FaQuestionCircle />}
+                colorScheme="yellow"
+                onClick={onOpen}
+                size="sm"
+              >
+                Help
+              </Button>
+
+              <Modal isOpen={isOpen} onClose={onClose}>
+                <ModalOverlay />
+                <ModalContent>
+                  <ModalHeader>Procedure :</ModalHeader>
+                  <ModalCloseButton />
+                  <ModalBody>
+                    abc
+                    <br />
+                    noe
+                  </ModalBody>
+                  <ModalFooter>
+                    <Button colorScheme="blue" mr={3} onClick={onClose}>
+                      Got it!
+                    </Button>
+                  </ModalFooter>
+                </ModalContent>
+              </Modal>
+            </div>
+          </HStack>
+
           <div className="goal">
             <div className="goal-title">
               <Box bg="grey" w="100%" p={0.2} color="white">
@@ -138,6 +193,7 @@ function App() {
             <div className="goal-space">
               <div className="goal-words">
                 <div className="goal-time">Enter your time weight(0-1) :</div>
+
                 {/* <input className="input-number input-time " type="text" > */}
                 <NumberInput
                   maxW={32}
@@ -146,6 +202,7 @@ function App() {
                   min={0.0}
                   max={1}
                   marginLeft={"10px"}
+                  onChange={(value) => setWeight(value)}
                 >
                   <NumberInputField />
                   <NumberInputStepper>
@@ -164,6 +221,7 @@ function App() {
                   min={0.0}
                   max={1}
                   marginLeft={"10px"}
+                  onChange={(value) => setCweight(value)}
                 >
                   <NumberInputField />
                   <NumberInputStepper>
@@ -171,6 +229,18 @@ function App() {
                     <NumberDecrementStepper />
                   </NumberInputStepper>
                 </NumberInput>
+              </div>
+              <div className="goal-words">
+                <div className="costcar">
+                  Enter the cost of each vehicle :
+                  <Input
+                    htmlSize={4}
+                    width="120px"
+                    onChange={(e) => {
+                      setCcar(e.target.value);
+                    }}
+                  />
+                </div>
               </div>
               <div className="warning">
                 <Alert status="warning">
@@ -180,6 +250,15 @@ function App() {
               </div>
             </div>
           </div>
+          {/* <div className="btnresult">
+            <label htmlFor=""></label>
+            <input type="text" onChange={this.getValue} />
+          </div> */}
+          {/* <div classname="confirmbtn">
+            <Button leftIcon={<FaCheck />} colorScheme="blue" variant="solid">
+              Confirm
+            </Button>
+          </div> */}
 
           <div className="result">
             <div className="result-title">
@@ -202,9 +281,24 @@ function App() {
               </div>
               <div className="result-words">
                 <div className="result-vehicle">Required Vehicles:</div>
+
                 <div className="result-number">
                   <Container maxW="container.md">{algoresultcar}</Container>
                 </div>
+              </div>
+              {/* <div className="result-words">
+                <div className="result-vehicle-price">
+                  Cost of each vehicle:
+                </div>
+
+                <div className="result-number">
+                  <Container maxW="container.md">
+                    ${algoresultcarcost}
+                  </Container>
+                </div>
+              </div> */}
+              <div className="result-vehicle-cap">
+                Capacity of each vehicle:
               </div>
             </div>
           </div>
@@ -215,12 +309,13 @@ function App() {
                 size="sm"
                 id="get-btn"
                 onClick={getResult}
+                leftIcon={<FaCheck />}
               >
-                Get Data
+                Get result
               </Button>
             </div>
             <button className="route-button">
-              <Button colorScheme="teal" size="lg">
+              <Button leftIcon={<FaDirections />} colorScheme="teal" size="lg">
                 View Route Directions
               </Button>
             </button>

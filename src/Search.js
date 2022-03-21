@@ -1,4 +1,5 @@
 import "./App.css";
+import { Input, HStack } from "@chakra-ui/react";
 
 import usePlacesAutocomplete, {
   getGeocode,
@@ -37,22 +38,29 @@ const Search = ({ stops, setStops, index }) => {
             const { lat, lng } = await getLatLng(results[0]);
             console.log(lat, lng);
             console.log(address);
+
             const newplaces = [...stops];
-            newplaces[index] = { address }; // This address is slightly different from what from the input, maybe use address instead
+            newplaces[index] = address; // This address is slightly different from what from the input, maybe use address instead
             setStops(newplaces);
           } catch (error) {
             console.log("Error!");
           }
         }}
       >
-        <AutoCompleteInput
-          variant="filled"
-          placeholder="Enter any address"
-          marginBottom={"10px"}
-          onChange={(e) => {
-            setValue(e.target.value);
-          }}
-        />
+        <HStack spacing={1}>
+          <AutoCompleteInput
+            variant="filled"
+            placeholder="Enter any address"
+            marginBottom={"5px"}
+            marginTop={"7px"}
+            width={"300px"}
+            onChange={(e) => {
+              setValue(e.target.value);
+            }}
+          />
+
+          <Input htmlSize={3} width="100px" placeholder="Capacity" />
+        </HStack>
         {status === "OK" && (
           <AutoCompleteList>
             {data.map(({ id, description }) => (
