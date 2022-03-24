@@ -12,7 +12,7 @@ import {
   GoogleMap,
   useLoadScript,
   Marker,
-  InfoWindow,
+  DirectionsRenderer,
 } from "@react-google-maps/api";
 import usePlacesAutocomplete, {
   getGeocode,
@@ -96,18 +96,24 @@ function App() {
   const [weight, setWeight] = useState("");
   const [cweight, setCweight] = useState("");
   const [ccar, setCcar] = useState("");
+  const [estimatedcost, setEstimatedCost] = useState("");
+  const [capacityvehicle, setCapacityVehicle] = useState("");
+  const [directionResponse, setDirectionResponse] = useState(null);
+  const [returnStop, setReturnStop] = useState("");
 
   const getResult = () => {
     Axios.post("/", {
       pt: stops,
       wcost: parseFloat(weight),
       cost: Number(ccar),
+      capcity: Number(capacityvehicle),
     })
       .then((response) => {
         console.log(response.data);
-
+        setReturnStop(response.data.stops);
         setalgoresult(response.data.time);
         setalgoresultcar(response.data.vehicle);
+        setEstimatedCost(response.data.cost);
         // setalgoresultcarcost(response.data.cost);
       })
       .catch((error) => {
@@ -127,6 +133,38 @@ function App() {
     // 1. [...stops, ]爆開stop array
     // 2. [null, null, ]
     // 3. [null, null, null]
+  }
+
+  async function displayRoute() {
+    // const numberofstop=[
+    //   {
+    //       location: "lokfu",
+    //       stopover: false,
+    //    }
+    //   ,
+    //   {
+    //     location:"kowloontong",
+    //     stopover:false
+    //   }
+    // ];
+    let numberofstop = [];
+    // console.log(returnStop[0].length);
+    for (let i = 1; i < returnStop[0].length - 1; i++) {
+      numberofstop.push({ location: returnStop[0][i], stopover: true });
+    }
+    console.log(numberofstop);
+    const directionsService = new window.google.maps.DirectionsService();
+    const method = await directionsService.route({
+      travelMode: window.google.maps.TravelMode.DRIVING,
+      origin: returnStop[0][0],
+      destination: returnStop[0][returnStop.length - 1],
+      waypoints: numberofstop,
+    });
+    setDirectionResponse(method);
+  }
+  function clearRoute() {
+    setDirectionResponse(null);
+    stops("");
   }
 
   return (
@@ -242,6 +280,18 @@ function App() {
                   />
                 </div>
               </div>
+              <div className="goal-words">
+                <div className="capacitycar">
+                  Enter the capacity of each vehicle :
+                  <Input
+                    htmlSize={4}
+                    width="82px"
+                    onChange={(e) => {
+                      setCapacityVehicle(e.target.value);
+                    }}
+                  />
+                </div>
+              </div>
               <div className="warning">
                 <Alert status="warning">
                   <AlertIcon />
@@ -276,7 +326,7 @@ function App() {
               <div className="result-words">
                 <div className="result-cost">Estimated Cost:</div>
                 <div className="result-number">
-                  <Container maxW="container.md">$20</Container>
+                  <Container maxW="container.md">{estimatedcost}</Container>
                 </div>
               </div>
               <div className="result-words">
@@ -297,9 +347,9 @@ function App() {
                   </Container>
                 </div>
               </div> */}
-              <div className="result-vehicle-cap">
+              {/* <div className="result-vehicle-cap">
                 Capacity of each vehicle:
-              </div>
+              </div> */}
             </div>
           </div>
           <div className="route">
@@ -315,7 +365,12 @@ function App() {
               </Button>
             </div>
             <button className="route-button">
-              <Button leftIcon={<FaDirections />} colorScheme="teal" size="lg">
+              <Button
+                leftIcon={<FaDirections />}
+                colorScheme="teal"
+                size="lg"
+                onClick={displayRoute}
+              >
                 View Route Directions
               </Button>
             </button>
@@ -341,12 +396,15 @@ function App() {
                 ]);
               }}
             >
-              {markers.map((marker) => (
+              {/* {markers.map((marker) => (
                 <Marker
                   key={marker.time.toISOString()}
                   position={{ lat: marker.lat, lng: marker.lng }}
                 />
-              ))}
+              ))} */}
+              {directionResponse && (
+                <DirectionsRenderer directions={directionResponse} />
+              )}
               {
                 /// <Places ></Places>*/
                 /* //   setOffice={(position) => { */

@@ -1,12 +1,18 @@
 import "./App.css";
 import { Input, HStack } from "@chakra-ui/react";
+import {
+  GoogleMap,
+  useLoadScript,
+  Marker,
+  DirectionsRenderer,
+} from "@react-google-maps/api";
 
 import usePlacesAutocomplete, {
   getGeocode,
   getLatLng,
 } from "use-places-autocomplete";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   AutoComplete,
   AutoCompleteInput,
@@ -27,6 +33,23 @@ const Search = ({ stops, setStops, index }) => {
       radius: 100 * 1000,
     },
   });
+  const [directionResponse, setDirectionResponse] = useState(null);
+  const stopref = useRef();
+
+  // async function displayRoute() {
+  //   if (stopref.current.value === "") {
+  //     return;
+  //   }
+  //   const directionService = new window.google.maps.DirectionsService();
+  //   const method = await directionService.route({
+  //     travelMode: window.google.maps.TravelMode.DRIVING,
+  //   });
+  //   setDirectionResponse(method);
+  // }
+  // function clearRoute() {
+  //   setDirectionResponse(null);
+  //   stops("");
+  // }
 
   return (
     <>
@@ -57,6 +80,7 @@ const Search = ({ stops, setStops, index }) => {
             onChange={(e) => {
               setValue(e.target.value);
             }}
+            ref={stopref}
           />
 
           <Input htmlSize={3} width="100px" placeholder="Capacity" />
