@@ -98,8 +98,11 @@ function App() {
   const [ccar, setCcar] = useState("");
   const [estimatedcost, setEstimatedCost] = useState("");
   const [capacityvehicle, setCapacityVehicle] = useState("");
-  const [directionResponse, setDirectionResponse] = useState(null);
+  // const [directionResponse, setDirectionResponse] = useState(null);
+  // const [directionResponse2, setDirectionResponse2] = useState(null);
   const [returnStop, setReturnStop] = useState("");
+
+  const [directionResponse, setDirectionResponse] = useState([]);
 
   const getResult = () => {
     Axios.post("/", {
@@ -125,6 +128,10 @@ function App() {
 
   const [stops, setStops] = useState([null, null]);
 
+  useEffect(() => {
+    console.log(directionResponse);
+  }, [directionResponse]);
+
   if (loadError) return "Error";
   if (!isLoaded) return "Loading";
 
@@ -147,21 +154,57 @@ function App() {
     //     stopover:false
     //   }
     // ];
-    let numberofstop = [];
+
     // console.log(returnStop[0].length);
-    for (let i = 1; i < returnStop[0].length - 1; i++) {
-      numberofstop.push({ location: returnStop[0][i], stopover: true });
+
+    // For DEBUG
+    // const returnStop = [
+    //   ["Yuen Long, 香港", "Tai Po, 香港", "Yuen Long, 香港"],
+    //   ["Yuen Long, 香港", "Tai Wai, 香港", "Yuen Long, 香港"],
+    //   ["Yuen Long, 香港", "Lok Fu, 香港", "Yuen Long, 香港"],
+    //   ["Yuen Long, 香港", "Hung Hom, 香港", "Yuen Long, 香港"],
+    // ];
+    // console.log(returnStop);
+
+    const promises = [];
+
+    for (let j = 0; j < returnStop.length; j++) {
+      let numberofstop = [];
+      for (let i = 1; i < returnStop[j].length - 1; i++) {
+        numberofstop.push({ location: returnStop[j][i], stopover: true });
+      }
+      // console.log(numberofstop);
+      // console.log(returnStop[0][0]);
+      // console.log(returnStop[0][returnStop[0].length - 1]);
+
+      const directionsService = new window.google.maps.DirectionsService();
+      const method = await directionsService.route({
+        travelMode: window.google.maps.TravelMode.DRIVING,
+        origin: returnStop[0][0],
+        destination: returnStop[0][returnStop[0].length - 1],
+        waypoints: numberofstop,
+      });
+      promises.push(method);
     }
-    console.log(numberofstop);
-    const directionsService = new window.google.maps.DirectionsService();
-    const method = await directionsService.route({
-      travelMode: window.google.maps.TravelMode.DRIVING,
-      origin: returnStop[0][0],
-      destination: returnStop[0][returnStop.length - 1],
-      waypoints: numberofstop,
+
+    Promise.all(promises).then((value) => {
+      //等齊4個
+      setDirectionResponse(value);
     });
-    setDirectionResponse(method);
   }
+
+  // for (let i = 1; i < returnStop[0].length - 1; i++) {
+  //   numberofstop.push({ location: returnStop[0][i], stopover: true });
+  // }
+  // const directionsService = new window.google.maps.DirectionsService();
+  // const method = await directionsService.route({
+  //   travelMode: window.google.maps.TravelMode.DRIVING,
+  //   origin: returnStop[0][0],
+  //   destination: returnStop[0][returnStop[0].length - 1],
+  //   waypoints: numberofstop,
+  // });
+  // setDirectionResponse(method);
+  // }
   function clearRoute() {
     setDirectionResponse(null);
     stops("");
@@ -402,9 +445,21 @@ function App() {
                   position={{ lat: marker.lat, lng: marker.lng }}
                 />
               ))} */}
-              {directionResponse && (
+
+              {/* {directionResponse && (
                 <DirectionsRenderer directions={directionResponse} />
               )}
+              {directionResponse2 && (
+                <DirectionsRenderer
+                  directions={directionResponse2}
+                  options={{ polylineOptions: { strokeColor: "#00FFFF" } }}
+                />
+              )} */}
+              {directionResponse.length > 0 &&
+                directionResponse.map((res, index) => (
+                  <DirectionsRenderer key={index} directions={res} />
+                ))}
+
               {
                 /// <Places ></Places>*/
                 /* //   setOffice={(position) => { */
