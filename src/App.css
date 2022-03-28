@@ -54,23 +54,28 @@
   color: #489550;
 }
 
+.clear-button {
+  margin-left: 10px;
+}
+
 .route-button {
-  background-color: #4caf50; /* Green */
+  background-color: white; /* Green */
   border-radius: 15px;
   color: black;
   text-align: center;
   display: inline-block;
   font-size: 16px;
 }
-
-.stop-button {
+.remove-button {
   padding: 12px 8px;
+}
 
-  /* Three good stuff */
+/* .stop-button {
+  padding: 12px 8px;
   display: inline-flex;
   justify-content: center;
   align-items: center;
-}
+} */
 
 .stop-button svg {
   margin-right: 4px;

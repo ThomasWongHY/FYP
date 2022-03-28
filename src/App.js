@@ -7,6 +7,7 @@ import {
   FaDirections,
   Facheck,
   FaCheck,
+  FaRegTimesCircle,
 } from "react-icons/fa";
 import {
   GoogleMap,
@@ -54,7 +55,7 @@ import {
   HStack,
   VStack,
 } from "@chakra-ui/react";
-import { MdAddCircleOutline } from "react-icons/md";
+import { MdAddCircleOutline, MdRemoveCircleOutline } from "react-icons/md";
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import {
   AutoComplete,
@@ -141,6 +142,9 @@ function App() {
     // 2. [null, null, ]
     // 3. [null, null, null]
   }
+  function handleClick_remove() {
+    setStops([null, null]);
+  }
 
   async function displayRoute() {
     // const numberofstop=[
@@ -193,21 +197,9 @@ function App() {
     });
   }
 
-  // for (let i = 1; i < returnStop[0].length - 1; i++) {
-  //   numberofstop.push({ location: returnStop[0][i], stopover: true });
-  // }
-  // const directionsService = new window.google.maps.DirectionsService();
-  // const method = await directionsService.route({
-  //   travelMode: window.google.maps.TravelMode.DRIVING,
-  //   origin: returnStop[0][0],
-  //   destination: returnStop[0][returnStop[0].length - 1],
-  //   waypoints: numberofstop,
-  // });
-  // setDirectionResponse(method);
-  // }
   function clearRoute() {
-    setDirectionResponse(null);
-    stops("");
+    setDirectionResponse("");
+    // stops("");
   }
 
   return (
@@ -223,17 +215,31 @@ function App() {
             />
           ))}
 
-          <HStack spacing={200}>
-            <Button
-              leftIcon={<MdAddCircleOutline />}
-              colorScheme="teal"
-              variant="solid"
-              marginTop={"10px"}
-              marginBottom={"15px"}
-              onClick={handleClick}
-            >
-              Add stops
-            </Button>
+          <HStack spacing={100}>
+            <HStack>
+              <Button
+                leftIcon={<MdAddCircleOutline />}
+                colorScheme="teal"
+                variant="solid"
+                marginTop={"10px"}
+                marginBottom={"15px"}
+                onClick={handleClick}
+              >
+                Add stops
+              </Button>
+              <div classname="helpbtn">
+                <Button
+                  leftIcon={<MdRemoveCircleOutline />}
+                  variant="solid"
+                  marginTop={"10px"}
+                  colorScheme="red"
+                  marginBottom={"15px"}
+                  onClick={handleClick_remove}
+                >
+                  Remove stops
+                </Button>
+              </div>
+            </HStack>
 
             <div classname="helpbtn">
               <Button
@@ -283,7 +289,7 @@ function App() {
                   min={0.0}
                   max={1}
                   marginLeft={"10px"}
-                  onChange={(value) => setWeight(value)}
+                  onChange={(value) => setCweight(value)}
                 >
                   <NumberInputField />
                   <NumberInputStepper>
@@ -302,7 +308,7 @@ function App() {
                   min={0.0}
                   max={1}
                   marginLeft={"10px"}
-                  onChange={(value) => setCweight(value)}
+                  onChange={(value) => setWeight(value)}
                 >
                   <NumberInputField />
                   <NumberInputStepper>
@@ -407,16 +413,28 @@ function App() {
                 Get result
               </Button>
             </div>
-            <button className="route-button">
-              <Button
-                leftIcon={<FaDirections />}
-                colorScheme="teal"
-                size="lg"
-                onClick={displayRoute}
-              >
-                View Route Directions
-              </Button>
-            </button>
+            <HStack>
+              <button className="route-button">
+                <Button
+                  leftIcon={<FaDirections />}
+                  colorScheme="teal"
+                  size="lg"
+                  onClick={displayRoute}
+                >
+                  View Route Directions
+                </Button>
+                <button className="clear-button">
+                  <Button
+                    colorScheme="red"
+                    onClick={clearRoute}
+                    size="md"
+                    leftIcon={<FaRegTimesCircle />}
+                  >
+                    Reset Map
+                  </Button>
+                </button>
+              </button>
+            </HStack>
           </div>
         </div>
 
