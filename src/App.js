@@ -129,12 +129,14 @@ function App() {
 
   const [stops, setStops] = useState([null, null]);
   const randomcolour = [
-    "#E5EFC1",
-    "#4F44FF",
-    "#39AEA9",
-    "#392BFF",
-    "#FF6C5E",
-    "#557B83",
+    "blue",
+    "red",
+    "fuchsia",
+    "maroon",
+    "purple",
+    "olive",
+    "teal",
+    "black",
   ];
   const colourindex = 0;
 
@@ -152,7 +154,8 @@ function App() {
     // 3. [null, null, null]
   }
   function handleClick_remove() {
-    setStops([null, null]);
+    // setStops([null, null]);
+    setStops([returnStop[0][0], returnStop[0][1]]);
   }
 
   async function displayRoute() {
@@ -224,7 +227,7 @@ function App() {
             />
           ))}
 
-          <HStack spacing={100}>
+          <HStack spacing={70}>
             <HStack>
               <Button
                 leftIcon={<MdAddCircleOutline />}
@@ -256,9 +259,8 @@ function App() {
                 colorScheme="yellow"
                 onClick={onOpen}
                 size="sm"
-              >
-                Help
-              </Button>
+                width="10px"
+              ></Button>
 
               <Modal isOpen={isOpen} onClose={onClose}>
                 <ModalOverlay />
@@ -384,7 +386,7 @@ function App() {
               <div className="result-words">
                 <div className="result-cost">Estimated Cost:</div>
                 <div className="result-number">
-                  <Container maxW="container.md">{estimatedcost}</Container>
+                  <Container maxW="container.md">$ {estimatedcost}</Container>
                 </div>
               </div>
               <div className="result-words">
