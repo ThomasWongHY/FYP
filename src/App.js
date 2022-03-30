@@ -128,6 +128,15 @@ function App() {
   const [markers, setMarkers] = React.useState([]);
 
   const [stops, setStops] = useState([null, null]);
+  const randomcolour = [
+    "#E5EFC1",
+    "#4F44FF",
+    "#39AEA9",
+    "#392BFF",
+    "#FF6C5E",
+    "#557B83",
+  ];
+  const colourindex = 0;
 
   useEffect(() => {
     console.log(directionResponse);
@@ -475,7 +484,15 @@ function App() {
               )} */}
               {directionResponse.length > 0 &&
                 directionResponse.map((res, index) => (
-                  <DirectionsRenderer key={index} directions={res} />
+                  <DirectionsRenderer
+                    key={index}
+                    directions={res}
+                    options={{
+                      polylineOptions: {
+                        strokeColor: randomcolour[index],
+                      },
+                    }}
+                  />
                 ))}
 
               {
