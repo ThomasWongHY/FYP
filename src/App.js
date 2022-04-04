@@ -77,10 +77,6 @@ const center = {
   lng: 114.151823768,
 };
 
-// type PlacesProps = {
-//   setOffice: (position: google.maps.LatLngLiteral) => void,
-// };
-
 function App() {
   const { isLoaded, loadError } = useLoadScript({
     googleMapsApiKey: process.env.REACT_APP_API_KEY,
@@ -102,6 +98,7 @@ function App() {
   // const [directionResponse, setDirectionResponse] = useState(null);
   // const [directionResponse2, setDirectionResponse2] = useState(null);
   const [returnStop, setReturnStop] = useState("");
+  const [showrouteword, setRouteWord] = useState("");
 
   const [directionResponse, setDirectionResponse] = useState([]);
 
@@ -155,7 +152,32 @@ function App() {
   }
   function handleClick_remove() {
     // setStops([null, null]);
-    setStops([returnStop[0][0], returnStop[0][1]]);
+    setStops([stops[0], stops[1]]);
+  }
+
+  function showroute() {
+    for (let j = 0; j < returnStop.length; j++) {
+      let showrouteword = [];
+      let comma = "";
+      for (let i = 0; i < returnStop[j].length; i++) {
+        showrouteword.push(returnStop[j][i]);
+        console.log(showrouteword);
+      }
+      for (let k = 0; k < showrouteword.length; k++) {
+        if (k == showrouteword.length - 1) {
+          comma = comma + showrouteword[k];
+        } else {
+          comma = comma + showrouteword[k] + " -> ";
+        }
+      }
+
+      alert("Route" + (j + 1) + ": " + comma);
+    }
+
+    // let shit = [];
+    // for (let i = 0; i < 3; i++) {
+    //   shit.push(i);
+    // }
   }
 
   async function displayRoute() {
@@ -396,6 +418,12 @@ function App() {
                   <Container maxW="container.md">{algoresultcar}</Container>
                 </div>
               </div>
+              <div className="result-words">
+                {/* <div className="showroute">Route 1 :</div> */}
+                <div className="stopname">
+                  <Container maxW="container.md">{showroute}</Container>
+                </div>
+              </div>
               {/* <div className="result-words">
                 <div className="result-vehicle-price">
                   Cost of each vehicle:
@@ -430,7 +458,11 @@ function App() {
                   leftIcon={<FaDirections />}
                   colorScheme="teal"
                   size="lg"
-                  onClick={displayRoute}
+                  // onClick={displayRoute}
+                  onClick={() => {
+                    displayRoute();
+                    showroute();
+                  }}
                 >
                   View Route Directions
                 </Button>
